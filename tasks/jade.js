@@ -152,7 +152,7 @@ module.exports = function(grunt) {
 
       Object.keys(templates).forEach(function(key) {
         writeFile(key, templates[key]);
-      })
+      });
     });
 
   });
