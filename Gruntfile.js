@@ -45,6 +45,12 @@ module.exports = function(grunt) {
         }
       },
 
+      compile_folder: {
+        files: {
+          'tmp/folders/': ['test/fixtures/folders/']
+        }
+      },
+
       compile_amd: {
         files: {
           'tmp/amd/jade.js': ['test/fixtures/jade.jade'],
