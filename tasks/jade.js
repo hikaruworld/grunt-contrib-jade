@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     var processContent = options.processContent || defaultProcessContent;
     var processName = options.processName || defaultProcessName;
 
-    var compile = function(filepath) {
+    var compile = function(orig, dest, src, filepath) {
       var src = processContent(grunt.file.read(filepath));
       var compiled, filename;
       filename = processName(filepath);
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
           compiled = compiled.toString();
         } else {
           // if data is function, bind to f.orig, passing f.dest and f.src
-          compiled = compiled(_.isFunction(data) ? data.call(f.orig, f.dest, f.src) : data);
+          compiled = compiled(_.isFunction(data) ? data.call(orig, dest, src) : data);
         }
         
         // if configured for amd and the namespace has been explicitly set
@@ -118,15 +118,7 @@ module.exports = function(grunt) {
 
     // execute
     this.files.forEach(function(f) {
-      // key:dest, value: array of compiled.
       var templates = {};
-
-      var destDir = function(relatedPath) {
-        if (grunt.file.isDir(f.dest)) {
-          return f.dest + relatedPath;
-        }
-        return f.dest;
-      }
 
       f.src.filter(function(filepath) {
         // Warn on and remove invalid source files (if nonull was set).
@@ -145,10 +137,12 @@ module.exports = function(grunt) {
             relatedPath = filename.lastIndexOf(".") === -1 ?
               filename + "." + options.extension :
               filename.substring(0, filename.lastIndexOf(".")) + "." + options.extension;
-            pushData(destDir(relatedPath), templates, compile(abspath));
+
+            var keyPath = f.dest + relatedPath;
+            pushData(keyPath, templates, compile(f.orig, keyPath, f.src, abspath));
           });
         } else {
-          pushData(destDir(), templates, compile(filepath))
+          pushData(f.dest, templates, compile(f.orig, f.dest, f.src, filepath))
         }
       });
 
