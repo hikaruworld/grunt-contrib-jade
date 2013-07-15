@@ -110,7 +110,9 @@ module.exports = function(grunt) {
     };
 
     var pushData = function(dest, templates, data) {
-      if (!Array.isArray(templates[dest])) templates[dest] = [];
+      if (!Array.isArray(templates[dest])) {
+        templates[dest] = [];
+      }
 
       templates[dest].push(data);
     };
@@ -132,7 +134,9 @@ module.exports = function(grunt) {
       .forEach(function(filepath) {
         if (grunt.file.isDir(filepath)) {
           grunt.file.recurse(filepath, function(abspath, rootdir, subdir, filename) {
-            if (filename.lastIndexOf(".jade") === -1) return;
+            if (filename.lastIndexOf(".jade") === -1) {
+              return;
+            }
             var relatedPath = subdir || '';
             relatedPath = filename.lastIndexOf(".") === -1 ?
               filename + "." + options.extension :
@@ -142,7 +146,7 @@ module.exports = function(grunt) {
             pushData(keyPath, templates, compile(f.orig, keyPath, f.src, abspath));
           });
         } else {
-          pushData(f.dest, templates, compile(f.orig, f.dest, f.src, filepath))
+          pushData(f.dest, templates, compile(f.orig, f.dest, f.src, filepath));
         }
       });
 
