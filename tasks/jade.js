@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     var processContent = options.processContent || defaultProcessContent;
     var processName = options.processName || defaultProcessName;
 
-    var compile = function(orig, dest, src, filepath) {
+    var compile = function(orig, dest, fsrc, filepath) {
       var src = processContent(grunt.file.read(filepath));
       var compiled, filename;
       filename = processName(filepath);
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
           compiled = compiled.toString();
         } else {
           // if data is function, bind to f.orig, passing f.dest and f.src
-          compiled = compiled(_.isFunction(data) ? data.call(orig, dest, src) : data);
+          compiled = compiled(_.isFunction(data) ? data.call(orig, dest, fsrc) : data);
         }
         
         // if configured for amd and the namespace has been explicitly set
